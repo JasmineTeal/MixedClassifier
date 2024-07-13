@@ -1,4 +1,4 @@
-# catboost.py
+# catBoost.py
 from catboost import CatBoostClassifier
 from sklearn.metrics import accuracy_score, classification_report, precision_score, recall_score, f1_score
 import joblib

@@ -12,7 +12,7 @@ from models.transformer import train_transformer
 from models.mlp import train_mlp
 from models.tabnet import train_tabnet
 from models.rf import train_rf
-from models.catboost import train_catboost
+from models.catBoost import train_catboost
 import joblib
 import os
 from sklearn.ensemble import RandomForestClassifier
