@@ -24,6 +24,7 @@ MODEL_PATHS = {
     'catboost': 'trained_models/catboost_model.cbm'
 }
 
+
 # 加载模型和进行预测的函数
 def load_and_predict(model_name, sample, device, input_dim, num_classes):
     if model_name not in MODEL_PATHS:
@@ -38,7 +39,8 @@ def load_and_predict(model_name, sample, device, input_dim, num_classes):
         print(f"RF proba shape: {proba.shape}")
         return proba
     elif model_name in MODEL_CLASSES:
-        model = SklearnWrapper(model_class=MODEL_CLASSES[model_name], input_dim=input_dim, num_classes=num_classes, model_type='pytorch', device=device)
+        model = SklearnWrapper(model_class=MODEL_CLASSES[model_name], input_dim=input_dim, num_classes=num_classes,
+                               model_type='pytorch', device=device)
         proba = model.predict_proba(sample)
         print(f"{model_name.upper()} proba shape: {proba.shape}")
         return proba
@@ -56,11 +58,13 @@ def load_and_predict(model_name, sample, device, input_dim, num_classes):
     else:
         raise ValueError(f"Unsupported model: {model_name}")
 
+
 # 加载数据和预处理
 def load_data(file_path):
     data = pd.read_csv(file_path)
     X_test, y_test = preprocess_test_data(data)
     return X_test, y_test
+
 
 # 加载Label Encoder
 label_encoder = joblib.load('pickles/label_encoder.pkl')
@@ -70,6 +74,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # 固定要加载的模型
 fixed_models = ['cnn', 'transformer', 'mlp', 'tabnet', 'rf', 'catboost']
+
 
 # 处理单个样本的预测
 def predict_single_sample(sample):
@@ -82,9 +87,14 @@ def predict_single_sample(sample):
 
     # 获取各个模型的预测概率
     stacked_proba = []
+    model_probabilities = {}  # To store individual model probabilities
     for model_name in fixed_models:
-        proba = load_and_predict(model_name, sample_np, device, input_dim=sample_np.shape[1], num_classes=len(label_encoder.classes_))
+        proba = load_and_predict(model_name, sample_np, device, input_dim=sample_np.shape[1],
+                                 num_classes=len(label_encoder.classes_))
         stacked_proba.append(proba[0])
+        model_probabilities[model_name] = dict(
+            zip(label_encoder.classes_, map(float, proba[0])))  # Store probabilities for each model
+
     stacked_sample_features = np.hstack(stacked_proba)
     print(f"Stacked sample features shape: {stacked_sample_features.shape}")
 
@@ -99,9 +109,10 @@ def predict_single_sample(sample):
     predicted_label = label_encoder.inverse_transform([final_sample_prediction])[0]
 
     # 输出所有标签及其对应的概率
-    predicted_probabilities = dict(zip(label_encoder.classes_, final_sample_prediction_proba))
+    predicted_probabilities = dict(zip(label_encoder.classes_, map(float, final_sample_prediction_proba)))
 
-    return predicted_label, predicted_probabilities
+    return predicted_label, predicted_probabilities, model_probabilities
+
 
 def main(args):
     # 加载数据
@@ -109,10 +120,11 @@ def main(args):
 
     # 测试单个样本预测
     sample = data.iloc[0].to_dict()  # 示例，使用数据集中的第一个样本
-    predicted_label, predicted_probabilities = predict_single_sample(sample)
+    predicted_label, predicted_probabilities, model_probabilities = predict_single_sample(sample)
     log_data = {
         'predicted_label': predicted_label,
-        'predicted_probabilities': predicted_probabilities
+        'predicted_probabilities': predicted_probabilities,
+        'model_probabilities': model_probabilities  # Log individual model probabilities
     }
 
     with open('logs/single_prediction.json', 'w') as f:
@@ -120,6 +132,8 @@ def main(args):
 
     print("单个样本的预测结果:", predicted_label)
     print("单个样本的预测概率:", json.dumps(predicted_probabilities, indent=4))
+    print("各个模型的预测概率:", json.dumps(model_probabilities, indent=4))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Predict a single sample using stacked models')
