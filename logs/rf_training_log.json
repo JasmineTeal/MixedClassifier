@@ -1,0 +1,58 @@
+{
+    "model": "RandomForest",
+    "best_params": {
+        "max_depth": 15,
+        "min_samples_leaf": 1,
+        "min_samples_split": 2,
+        "n_estimators": 350
+    },
+    "accuracy": 0.7551020408163265,
+    "precision": 0.777111733858142,
+    "recall": 0.7551020408163265,
+    "f1_score": 0.7606633824178325,
+    "classification_report": {
+        "black": {
+            "precision": 0.6451612903225806,
+            "recall": 0.7142857142857143,
+            "f1-score": 0.6779661016949152,
+            "support": 28.0
+        },
+        "gamble": {
+            "precision": 0.9615384615384616,
+            "recall": 0.8333333333333334,
+            "f1-score": 0.8928571428571429,
+            "support": 30.0
+        },
+        "scam": {
+            "precision": 0.9375,
+            "recall": 0.8571428571428571,
+            "f1-score": 0.8955223880597014,
+            "support": 35.0
+        },
+        "sex": {
+            "precision": 0.7083333333333334,
+            "recall": 0.5862068965517241,
+            "f1-score": 0.6415094339622641,
+            "support": 29.0
+        },
+        "white": {
+            "precision": 0.5588235294117647,
+            "recall": 0.76,
+            "f1-score": 0.6440677966101696,
+            "support": 25.0
+        },
+        "accuracy": 0.7551020408163265,
+        "macro avg": {
+            "precision": 0.762271322921228,
+            "recall": 0.7501937602627258,
+            "f1-score": 0.7503845726368386,
+            "support": 147.0
+        },
+        "weighted avg": {
+            "precision": 0.777111733858142,
+            "recall": 0.7551020408163265,
+            "f1-score": 0.7606633824178325,
+            "support": 147.0
+        }
+    }
+}

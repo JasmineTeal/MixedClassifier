@@ -1,0 +1,2 @@
+apk_name,api_calls,permissions,suspicious_resources,entropy,version,storage,base_name_length,top_level_domain_match,sensitive_api_count,label
+1e7f92e2ad04294293760d2aba20bbc3.apk,3621,18,13,3.8428572928084965,1.8,5.43,36,1,17,white
