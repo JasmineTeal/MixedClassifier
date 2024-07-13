@@ -148,7 +148,7 @@ def train_meta_model(X_train, X_test, y_train, y_test, input_dim, num_classes, d
     assert rf_proba.shape[0] == cnn_proba.shape[0] == transformer_proba.shape[0] == mlp_proba.shape[0] == \
            tabnet_proba.shape[0] == catboost_proba.shape[0], "Mismatched shapes in prediction probabilities."
 
-    stacked_features = np.hstack((rf_proba, cnn_proba, transformer_proba, mlp_proba, tabnet_proba, catboost_proba))
+    stacked_features = np.hstack((rf_proba, cnn_proba, tabnet_proba, catboost_proba, mlp_proba, transformer_proba))
     print(f"Stacked features shape: {stacked_features.shape}")
 
     # 训练元学习器

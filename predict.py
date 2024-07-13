@@ -10,6 +10,11 @@ from utils import preprocess_test_data, create_test_dataloader, SklearnWrapper, 
 from models.model import CNN1D, TransformerModel, MLP
 from catboost import CatBoostClassifier
 
+np.random.seed(42)
+torch.manual_seed(42)
+if torch.cuda.is_available():
+    torch.cuda.manual_seed(42)
+
 MODEL_CLASSES = {
     'cnn': CNN1D,
     'transformer': TransformerModel,
@@ -74,7 +79,7 @@ def main(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # 固定要加载的模型
-    fixed_models = ['cnn', 'transformer', 'mlp', 'tabnet', 'rf', 'catboost']
+    fixed_models = ['rf', 'cnn', 'tabnet', 'catboost', 'mlp', 'transformer']
 
     # 特征堆叠
     stacked_proba = []
